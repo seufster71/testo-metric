@@ -15,7 +15,7 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-import org.testo.core.model.WorkUnit;
+import org.testo.core.model.KafkaMsg;
 
 @Configuration
 @EnableKafka
@@ -26,8 +26,8 @@ public class KafkaConsumerConfig {
     private KafkaConsumerProperties kafkaConsumerProperties;
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, WorkUnit> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, WorkUnit> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, KafkaMsg> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, KafkaMsg> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConcurrency(1);
         factory.setConsumerFactory(consumerFactory());
@@ -35,7 +35,7 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, WorkUnit> consumerFactory() {
+    public ConsumerFactory<String, KafkaMsg> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerProps(), stringKeyDeserializer(), workUnitJsonValueDeserializer());
     }
 
@@ -58,6 +58,6 @@ public class KafkaConsumerConfig {
 
     @Bean
     public Deserializer workUnitJsonValueDeserializer() {
-        return new JsonDeserializer(WorkUnit.class);
+        return new JsonDeserializer(KafkaMsg.class);
     }
 }
