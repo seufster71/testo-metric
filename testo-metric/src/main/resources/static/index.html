@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<META HTTP-EQUIV="refresh" CONTENT="30">
+	<title>Metric</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+	<script>
+		function getKafkaMessages() {
+			var request1 = new Object;
+			request1.params = new Object;
+			request1.params.service = "KAFKA_SVC";
+			request1.params.action = "LIST";
+			$.ajax({
+				  url:"/api/metric/service",
+				  type:"POST",
+				  data:JSON.stringify(request1),
+				  contentType:"application/json; charset=utf-8",
+				  dataType:"json",
+				  success: function(data){
+					  showResults(data);
+				  }
+				});
+
+		}
+		function showResults(JSONData) {
+			var tableWrapper = document.getElementById("table1")
+			if (JSONData.params != null && JSONData.params.messages != null && JSONData.params.messages.length >= 0) {
+				var messages = JSONData.params.messages;
+				tableWrapper.innerHTML = "";
+
+				var table = document.createElement("table");
+				table.className = "table";
+				tableWrapper.appendChild(table);
+
+				var trhead = document.createElement("tr");
+				table.appendChild(trhead);
+				var thdate = document.createElement("th");
+				thdate.innerHTML = "Date";
+				trhead.appendChild(thdate);
+				var thmessage = document.createElement("th");
+				thmessage.innerHTML = "Message";
+				trhead.appendChild(thmessage);
+				
+				for (var i =0; i < messages.length; i++) {
+					var trdata = document.createElement("tr");
+					table.appendChild(trdata);
+					var tddate = document.createElement("td");
+					tddate.innerHTML = new Date(messages[i].created);
+					table.appendChild(tddate);
+					var tdmessage = document.createElement("td");
+					tdmessage.innerHTML = messages[i].message;
+					table.appendChild(tdmessage);
+				}
+			}
+		}
+
+		$(document).ready(function(){
+			getKafkaMessages();
+		});
+	</script>
+</head>
+<body>
+	<div class="container">
+	  <h1>Metric Page</h1>
+	  
+	  
+	  <div class="panel panel-default">
+		  <!-- Default panel contents -->
+		  <div class="panel-heading">Kafka messages</div>
+		  <!-- Table -->
+		  <div id="table1">
+			  <table class="table">
+			    ...
+			  </table>
+		  </div>
+		</div>
+	</div>
+
+</body>
+</html>
